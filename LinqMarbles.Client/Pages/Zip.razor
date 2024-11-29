@@ -19,7 +19,7 @@
         <div class="array">
             @foreach (var marble in _marbles1)
             {
-                <Marble Color="marble.Color"
+                <Marble Color="@marble.Color"
                         Close="@(() => _marbles1.Remove(marble))">
                     @marble.Number,@marble.Content
                 </Marble>
@@ -29,7 +29,7 @@
         <div class="array">
             @foreach (var marble in _marbles2)
             {
-                <Marble Color="marble.Color">@marble.Number,@marble.Content</Marble>
+                <Marble Color="@marble.Color">@marble.Number,@marble.Content</Marble>
             }
             <AddMarble DefaultContent='"1,B"' OnAdd="AddNewContentToList2" T="string"/>
         </div>
@@ -44,22 +44,30 @@
                 Content = item1.Content + item2.Content
             }))
         {
-            <Marble Color="zipped.Color">@zipped.Number,@zipped.Content</Marble>
+            <Marble Color="@zipped.Color">@zipped.Number,@zipped.Content</Marble>
         }
     </OutputPanel>
 </PageContainer>
 
 @code {
-    private readonly List<MarbleMultiModel> _marbles1 = new()
+    [CascadingParameter] GlobalObject? _globalObject { get; set; }
+
+    private List<MarbleMultiModel> _marbles1 = new();
+    private List<MarbleMultiModel> _marbles2 = new();
+
+    protected override void OnInitialized()
     {
-        new(1, "A"),
-        new(2, "D"), 
-    };
-    
-    private readonly List<MarbleMultiModel> _marbles2 = new()
-    {
-        new(3, "C"),
-    };
+        _marbles1 = new()
+        {
+            new(1, "A", _globalObject),
+            new(2, "D", _globalObject),
+        };
+
+        _marbles2 = new()
+        {
+            new(3, "C", _globalObject),
+        };
+    }
     
     private void AddNewContentToList1(string input)
     {
@@ -72,7 +80,7 @@
         var number = int.Parse(split[0]);
         var content = split[1];
         
-        _marbles1.Add(new MarbleMultiModel(number, content));
+        _marbles1.Add(new MarbleMultiModel(number, content, _globalObject));
     }
     
     private void AddNewContentToList2(string input)
@@ -86,6 +94,6 @@
         var number = int.Parse(split[0]);
         var content = split[1];
         
-        _marbles2.Add(new MarbleMultiModel(number, content));
+        _marbles2.Add(new MarbleMultiModel(number, content, _globalObject));
     }
 }

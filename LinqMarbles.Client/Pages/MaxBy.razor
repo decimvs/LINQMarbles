@@ -5,7 +5,7 @@
     <InputPanel>
         @foreach (var marble in _marbles)
         {
-            <Marble Color="marble.Color"
+            <Marble Color="@marble.Color"
                     Close="@(() => _marbles.Remove(marble))">
                 @marble.Number,@marble.Content
             </Marble>
@@ -16,23 +16,30 @@
         @{ var marble = _marbles.MaxBy(m => m.Content); }
         @if (marble is not null)
         {
-            <Marble Color="marble.Color">@marble.Number,@marble.Content</Marble>
+            <Marble Color="@marble.Color">@marble.Number,@marble.Content</Marble>
         }
         else 
         {
-            <Marble Color="Color.Info">null</Marble>
+            <Marble ThemeColor="Color.Info">null</Marble>
         }
     </OutputPanel>
 </PageContainer>
 
 @code {
-    private readonly List<MarbleMultiModel> _marbles = new()
+    [CascadingParameter] GlobalObject? _globalObject { get; set; }
+
+    private List<MarbleMultiModel> _marbles = new();
+
+    protected override void OnInitialized()
     {
-        new(1, "C"),
-        new(2, "D"), 
-        new(3, "A"), 
-        new(4, "B")
-    };
+        _marbles = new()
+        {
+            new(1, "C", _globalObject),
+            new(2, "D", _globalObject),
+            new(3, "A", _globalObject),
+            new(4, "B", _globalObject)
+        };
+    }
     
     private void AddNewContentToList(string input)
     {
@@ -45,6 +52,6 @@
         var number = int.Parse(split[0]);
         var content = split[1];
         
-        _marbles.Add(new MarbleMultiModel(number, content));
+        _marbles.Add(new MarbleMultiModel(number, content, _globalObject));
     }
 }

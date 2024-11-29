@@ -13,8 +13,5 @@ It is based on the [Rx Marbles](http://rxmarbles.com/) project, that inspired me
 ## Contributing
 Feel free to file issues and pull requests on the repo and I'll take a look at them as soon as I can. Help is always welcome!
 
-Thanks to all [contributors](https://github.com/linkdotnet/LINQMarbles/graphs/contributors):
-
-<a href="https://github.com/linkdotnet/LINQMarbles/graphs/contributors">
-  <img src="https://contrib.rocks/image?repo=linkdotnet/LINQMarbles" />
-</a>
+## Original project
+This project is a fork of the original project by Steven Giesel [LinqMarbles](https://github.com/linkdotnet/LINQMarbles). I've decided to continue the project and add more operators and features.

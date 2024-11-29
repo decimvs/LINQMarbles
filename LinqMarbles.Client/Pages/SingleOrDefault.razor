@@ -4,7 +4,7 @@
     <InputPanel>
          @foreach (var marble in _marbles)
          {
-             <Marble Color="marble.Color"
+             <Marble Color="@marble.Color"
                      Close="@(() => _marbles.Remove(marble))">
                  @marble.Number
              </Marble>
@@ -15,27 +15,34 @@
         @{ var marble = _marbles.SingleOrDefault(n => n.Number > 4); }
         @if (marble is not null)
         {
-            <Marble Color="marble.Color">@marble.Number</Marble>
+            <Marble Color="@marble.Color">@marble.Number</Marble>
         }
         else
         {
-            <Marble Color="Color.Info">null</Marble>
+            <Marble ThemeColor="Color.Info">null</Marble>
         }
     </OutputPanel>
 </PageContainer>
 
 @code {
-    private readonly List<MarbleNumberModel> _marbles = new()
+    [CascadingParameter] GlobalObject? _globalObject { get; set; }
+
+    private List<MarbleNumberModel> _marbles;
+
+    protected override void OnInitialized()
     {
-        new(1),
-        new(2), 
-        new(3), 
-        new(4)
-    };
-    
+        _marbles = new()
+        {
+            new(1, _globalObject!),
+            new(2, _globalObject!),
+            new(3, _globalObject!),
+            new(4, _globalObject!)
+        };
+    }
+
     private void AddNumber(int number)
     {
-        _marbles.Add(new MarbleNumberModel(number));
+        _marbles.Add(new MarbleNumberModel(number, _globalObject!));
     }
 
 }

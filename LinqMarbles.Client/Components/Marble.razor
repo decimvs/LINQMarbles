@@ -1,13 +1,17 @@
-<MudChip Color="@Color" OnClick="Clicked" Size="Size.Large" CloseIcon="@CloseIcon" OnClose="Close" T="string">
+<MudChip Style="@_color" Color="@ThemeColor" OnClick="Clicked" Size="Size.Large" CloseIcon="@CloseIcon" OnClose="Close" T="string">
     @ChildContent
 </MudChip>
 
 @code {
     private string? CloseIcon => Deletable ? Icons.Material.Filled.Close : null;
-    
-    [Parameter, EditorRequired] 
-    public required Color Color { get; set; }
-    
+
+    private string _color = "background-color: transparent;";
+
+    [Parameter]
+    public string Color { get; set; } = "";
+
+    [Parameter] public Color? ThemeColor { get; set; } = null;
+
     [Parameter, EditorRequired] 
     public required RenderFragment ChildContent { get; set; }
 
@@ -20,4 +24,22 @@
     [Parameter]
     public EventCallback Close { get; set; }
 
+    protected override void OnAfterRender(bool firstRender)
+    {
+        base.OnAfterRender(firstRender);
+
+        if (firstRender)
+        {   
+            if (ThemeColor is not null)
+            {
+                _color = "";
+            }
+            else
+            {
+                _color = $"background-color: {Color};";
+            }
+
+            StateHasChanged();
+        }
+    }
 }

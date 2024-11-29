@@ -6,8 +6,8 @@
         <div class="array">
             @foreach (var marble in _marbles1)
             {
-                <Marble Color="marble.Color"
-                        Close="@(() => _marbles1.Remove(marble))">
+                <Marble Color="@marble.Color"
+                Close="@(() => _marbles1.Remove(marble))">
                     @marble.Number
                 </Marble>
             }
@@ -16,8 +16,8 @@
         <div class="array">
             @foreach (var marble in _marbles2)
             {
-                <Marble Color="marble.Color"
-                        Close="@(() => _marbles2.Remove(marble))">
+                <Marble Color="@marble.Color"
+                Close="@(() => _marbles2.Remove(marble))">
                     @marble.Number
                 </Marble>
             }
@@ -27,30 +27,43 @@
     <OutputPanel>
         @foreach (var concat in _marbles1.Concat(_marbles2))
         {
-            <Marble Color="concat.Color">@concat.Number</Marble>
+            <Marble Color="@concat.Color">@concat.Number</Marble>
         }
     </OutputPanel>
 </PageContainer>
 
 @code {
-    private readonly List<MarbleNumberModel> _marbles1 = new()
+    [CascadingParameter] GlobalObject? _globalObject { get; set; }
+
+    string _unitedColor = "";
+
+    private List<MarbleNumberModel> _marbles1;
+
+    private List<MarbleNumberModel> _marbles2;
+
+    protected override void OnInitialized()
     {
-        new(1),
-        new(2),
-    };
-    
-    private readonly List<MarbleNumberModel> _marbles2 = new()
-    {
-        new(3),
-    };
+        _marbles1 = new()
+        {
+            new(1, _globalObject!),
+            new(2, _globalObject!),
+        };
+
+        _marbles2 = new()
+        {
+            new(3, _globalObject!),
+        };
+
+        _unitedColor = ColorsHelper.GetRandomColor(_globalObject);
+    }
 
     private void AddNumberToFirstList(int number)
     {
-        _marbles1.Add(new MarbleNumberModel(number) { Color = Color.Secondary });
+        _marbles1.Add(new MarbleNumberModel(number, _globalObject!) { Color = _unitedColor });
     }
     
     private void AddNumberToSecondList(int number)
     {
-        _marbles2.Add(new MarbleNumberModel(number) { Color = Color.Secondary });
+        _marbles2.Add(new MarbleNumberModel(number, _globalObject!) { Color = _unitedColor });
     }
 }

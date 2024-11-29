@@ -5,8 +5,8 @@
     <InputPanel>
         @foreach (var marble in _marbles)
         {
-            <Marble Color="marble.Color"
-                    Close="@(() => _marbles.Remove(marble))">
+            <Marble Color="@marble.Color"
+            Close="@(() => _marbles.Remove(marble))">
                 @marble.Number,@marble.Content
             </Marble>
         }
@@ -21,7 +21,7 @@
                     <MudIcon Icon="@Icons.Material.Filled.ArrowCircleRight"/>
                     @foreach (var element in group)
                     {
-                        <Marble Color="element.Color">@element.Number,@element.Content</Marble>
+                        <Marble Color="@element.Color">@element.Number,@element.Content</Marble>
                     }
                 </span>
             }
@@ -30,13 +30,20 @@
 </PageContainer>
 
 @code {
-    private readonly List<MarbleMultiModel> _marbles = new()
+    [CascadingParameter] GlobalObject? _globalObject { get; set; }
+
+    private List<MarbleMultiModel> _marbles;
+
+    protected override void OnInitialized()
     {
-        new(1, "A"),
-        new(2, "D"), 
-        new(3, "A"), 
-        new(4, "B")
-    };
+        _marbles = new()
+        {
+        new(1, "A", _globalObject),
+        new(2, "D", _globalObject),
+        new(3, "A", _globalObject),
+        new(4, "B", _globalObject)
+        };
+    }
 
     private void AddNewContent(string input)
     {
@@ -49,6 +56,6 @@
         var number = int.Parse(split[0]);
         var content = split[1];
         
-        _marbles.Add(new MarbleMultiModel(number, content));
+        _marbles.Add(new MarbleMultiModel(number, content, _globalObject));
     }
 }

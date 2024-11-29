@@ -6,7 +6,7 @@
     <InputPanel>
         @foreach (var marble in _marbles)
         {
-            <Marble Color="marble.Color"
+            <Marble Color="@marble.Color"
                     Close="@(() => _marbles.Remove(marble))">@marble.Number</Marble>
         }
         <AddMarble DefaultContent="5" OnAdd="AddNumber" T="int" />
@@ -14,23 +14,30 @@
     <OutputPanel>
         @foreach (var marble in _marbles.Where(m => m.Number % 2 == 0))
         {
-            <Marble Color="marble.Color">@marble.Number</Marble>
+            <Marble Color="@marble.Color">@marble.Number</Marble>
         }
     </OutputPanel>
 </PageContainer>
 
 @code {
-    private readonly List<MarbleNumberModel> _marbles = new()
+    [CascadingParameter] GlobalObject? _globalObject { get; set; }
+
+    private List<MarbleNumberModel> _marbles;
+
+    protected override void OnInitialized()
     {
-        new(1),
-        new(2), 
-        new(3), 
-        new(4)
-    };
+        _marbles = new()
+        {
+            new(1, _globalObject!),
+            new(2, _globalObject!),
+            new(3, _globalObject!),
+            new(4, _globalObject!)
+        };
+    }
 
     private void AddNumber(int number)
     {
-        _marbles.Add(new MarbleNumberModel(number));
+        _marbles.Add(new MarbleNumberModel(number, _globalObject!));
     }
 
     private void DeleteMarble(int number)
