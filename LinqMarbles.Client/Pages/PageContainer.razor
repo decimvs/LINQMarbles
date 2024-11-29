@@ -1,4 +1,4 @@
-<MudCard Class="marbles-card">
+<MudCard Class="marbles-card pa-5" Style="@_backgroundColorCss">
     <MudCardContent>
         <MudGrid>
             <MudItem xs="12">
@@ -51,22 +51,52 @@
 @code {
     [Parameter]
     public string? OperatorText { get; set; }
-    
+
     [Parameter]
     public RenderFragment? OperatorPanel { get; set; }
 
     [Parameter, EditorRequired]
     public required RenderFragment InputPanel { get; set; }
-    
+
     [Parameter, EditorRequired]
     public required RenderFragment OutputPanel { get; set; }
-    
+
+    [CascadingParameter] public GlobalObject? _globalObject { get; set; }
+
     private ErrorBoundary? _errorBoundary;
+    private string? _backgroundColorCss = $"background-color: {Colors.Gray.Lighten4};";
 
     protected override void OnParametersSet()
     {
         _errorBoundary?.Recover();
         base.OnParametersSet();
+
+        if (_globalObject is not null)
+        {
+            _globalObject!.OnDarkModeChanged += OnDarkModeChanged;
+        }
+
+        SetBackgroundColorCss();
+    }
+
+    private void SetBackgroundColorCss()
+    {
+        bool state = _globalObject?.IsDarkMode ?? false;
+
+        if (state)
+        {
+            _backgroundColorCss = $"background-color: { Colors.Gray.Darken4 };";
+        }
+        else
+        {
+            _backgroundColorCss = $"background-color: {Colors.Gray.Lighten4};";
+        }
+    }
+
+    private void OnDarkModeChanged(object? sender, bool currentState)
+    {
+        SetBackgroundColorCss();
+        StateHasChanged();
     }
 
 }

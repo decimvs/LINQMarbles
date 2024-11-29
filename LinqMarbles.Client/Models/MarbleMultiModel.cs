@@ -1,8 +1,8 @@
 using MudBlazor;
 
-namespace LinqMarbles;
+namespace LinqMarbles.Client.Models;
 
-public record MarbleNumberModel(int Number)
+public record MarbleMultiModel(int Number, string Content)
 {
     public Color Color { get; init; } = GetRandomColor();
 
@@ -12,8 +12,4 @@ public record MarbleNumberModel(int Number)
         var randomIndex = Random.Shared.Next(colors.Length);
         return colors[randomIndex];
     }
-
-    public virtual bool Equals(MarbleNumberModel? other) => Number == other?.Number;
-    
-    public override int GetHashCode() => Number.GetHashCode();
 }
